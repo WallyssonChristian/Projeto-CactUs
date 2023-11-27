@@ -60,9 +60,9 @@ public abstract class Produto {
 		System.out.println(line);
 		System.out.println("	Dados do Produto	");
 		System.out.println(line);
-		System.out.println("ID do Produto: " + this.id);
-		System.out.println("Tipo do Produto: " + tipo);
-		System.out.println("Nome do Produto: " + this.nome);
-		System.out.println("Preço do Produto: " + this.preco);
+		System.out.println("ID: " + this.id);
+		System.out.println("Tipo: " + tipo);
+		System.out.println("Nome: " + this.nome);
+		System.out.println("Preço: " + this.preco);
 	}
 }

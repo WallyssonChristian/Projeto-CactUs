@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import cactus.model.*;
 import cactus.repository.ProdutoRepository;
+import cactus.util.Cores;
 
 public class ProdutoController implements ProdutoRepository {
 	
@@ -14,7 +15,7 @@ public class ProdutoController implements ProdutoRepository {
 	@Override
 	public void cadastrarProduto(Produto produto) {
 		listaProdutos.add(produto);
-		System.out.println("Produto cadastrado com sucesso !");		
+		System.out.println(Cores.tema + "Produto cadastrado com sucesso!");		
 	}
 
 	@Override

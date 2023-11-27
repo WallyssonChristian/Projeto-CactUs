@@ -1,6 +1,7 @@
 package cactus;
 
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import cactus.controller.ProdutoController;
@@ -19,7 +20,16 @@ public class Menu {
 		int op, id, tipo;
 		String nome, nomeC, material, confirm;
 		float preco;
-
+		
+		CactoNatural cn1 = new CactoNatural(controller.gerarId(), 1, "Cacto-Espinho", 6000, "Ferocactus latispinus");
+		controller.cadastrarProduto(cn1);
+		CactoNatural cn2 = new CactoNatural(controller.gerarId(), 1, "Cacto-Orquídea", 300, "Epiphyllum ackermannii");
+		controller.cadastrarProduto(cn2);
+		CactoArtificial ca1 = new CactoArtificial(controller.gerarId(), 2, "Cacto de Porcelana", 80, "Porcelana");
+		controller.cadastrarProduto(ca1);
+		CactoArtificial ca2 = new CactoArtificial(controller.gerarId(), 2, "Cacto de Pelúcia", 40, "Pelúcia");
+		controller.cadastrarProduto(ca2);
+		
 		do {
 			System.out.println(Cores.tema);
 			System.out.println(LINE);
@@ -35,21 +45,37 @@ public class Menu {
 			System.out.println("0- Sair");
 			System.out.println(LINE);
 			System.out.print("Entre com a opção desejada: ");
-			op = read.nextInt();
+			
+			try {
+				op = read.nextInt();
+			} catch (InputMismatchException e) {
+				System.out.println(Cores.error + "\nDigite valores inteiros!\n" +Cores.tema);
+				read.nextLine();
+				op = -1;
+			}
+			
 			
 			switch(op) {
 			case 1:
 				System.out.println("\n🌵 Cadastrar Produto");
 				
-				System.out.print("Tipo do Cacto(1-Natural | 2-Arficial): ");
-				tipo = read.nextInt();
+				do {
+					tipo = validaInt("Tipo do Cacto(1-Natural | 2-Arficial): ");
+					if (tipo < 1 || tipo > 2)
+						System.out.println(Cores.error + "Valor Inválido!" + Cores.tema);
+				} while (tipo < 1 || tipo > 2);
 				
-				System.out.print("Nome do Cacto: ");
-				read.skip("\\R?");
-				nome = read.nextLine();
-				
-				System.out.print("Preço do Cacto: ");
-				preco = read.nextFloat();
+				do {
+					nome = validaString("Nome do Cacto: ");
+					if(nome.equals("-1")) {
+						System.out.println(Cores.error + "Nome Inválido" + Cores.tema);
+					}
+				} while (nome.equals("-1"));
+					
+				do {
+					preco = validaValor("Preço do Cacto: ");
+					if (preco < 0) System.out.println("O valor não pode ser negativo!");
+				} while (preco < 0);
 				
 				switch(tipo) {
 					case 1 -> {
@@ -59,7 +85,7 @@ public class Menu {
 						controller.cadastrarProduto(new CactoNatural(controller.gerarId(), tipo, nome, preco, nomeC));
 					}
 					case 2 -> {
-						System.out.print("Material do Cacto: ");
+						System.out.print("Material: ");
 						read.skip("\\R?");
 						material = read.nextLine();
 						controller.cadastrarProduto(new CactoArtificial(controller.gerarId(), tipo, nome, preco, material));
@@ -83,18 +109,22 @@ public class Menu {
 			case 4:
 				System.out.println("\n🌵 Atualizar Produto");
 				
-				System.out.print("Digite o ID do produto: ");
-				id = read.nextInt();
+				id = validaInt("Digite o ID do produto: ");
 				
 				if (controller.buscarNaLista(id).isPresent()) {
 					System.out.println("Digite os novos dados do produto: \n");
 					
-					System.out.println("Nome do Cacto: ");
-					read.skip("\\R?");
-					nome = read.nextLine();
+					do {
+						nome = validaString("Nome do Cacto: ");
+						if(nome.equals("-1")) {
+							System.out.println(Cores.error + "Nome Inválido" + Cores.tema);
+						}
+					} while (nome.equals("-1"));
 					
-					System.out.print("Preço do Cacto: ");
-					preco = read.nextFloat();
+					do {
+						preco = validaValor("Preço do Cacto: ");
+						if (preco < 0) System.out.println("O valor não pode ser negativo!");
+					} while (preco < 0);
 					
 					tipo = controller.retornaTipo(id);
 					switch(tipo){
@@ -105,12 +135,14 @@ public class Menu {
 							controller.atualizarProduto(new CactoNatural(id, tipo, nome, preco, nomeC));
 						}
 						case 2 -> {
-							System.out.print("Material do Cacto: ");
+							System.out.print("Material: ");
 							read.skip("\\R?");
 							material = read.nextLine();
 							controller.cadastrarProduto(new CactoArtificial(id, tipo, nome, preco, material));
 						}
 					}
+				} else {
+					System.out.println("\nConta não encontrada!");
 				}
 				
 				keyPress();
@@ -128,14 +160,14 @@ public class Menu {
 				if (confirm.equalsIgnoreCase("S"))
 					controller.deletarProduto(id);
 				else 
-					System.out.println("Produto não deletado");
+					System.out.println("\nProduto não deletado");
 				keyPress();
 				break;
 			case 0:
 				about();
 				break;
 			default:
-				System.out.println("Opção Inválida");
+				System.out.println("\nOpção Inválida");
 				
 				keyPress();
 				break;
@@ -174,6 +206,47 @@ public class Menu {
 		System.out.println("Projeto Desenvolvido por: Wallysson Araujo          ");
 		System.out.println("wallysson.christian@outlook.com                     ");
 		System.out.println("github.com/WallyssonChristian                       ");
+	}
+	
+	public static void apenasLetras(String input) {
+		if (!input.matches("^[\\p{L}\\s\\-]+$")) {
+			throw new InputMismatchException("O nome não deve conter números.");
+		}
+	}
+	
+	public static String validaString(String texto) {
+		String nome;
+		try {
+			System.out.print(texto);
+			read.skip("\\R?");
+			nome = read.nextLine();
+			apenasLetras(nome);
+			return nome;
+		} catch (InputMismatchException e) {
+			System.out.println(e.getMessage());
+			return "-1";
+		}
+	}
+	
+	public static int validaInt(String texto) {
+		try {
+			System.out.print(texto);
+			return read.nextInt();
+		} catch (InputMismatchException e) {
+			System.out.println("Deve conter apenas Números!");
+			read.next();
+			return -1;
+		}
+	}
+	
+	public static float validaValor(String texto) {
+		System.out.print(texto);
+		while(!read.hasNextFloat()) {
+			System.out.println("Por favor, digite um valor válido.");
+			System.out.print(texto);
+			read.next();
+		}
+		return read.nextFloat();
 	}
 
 }
