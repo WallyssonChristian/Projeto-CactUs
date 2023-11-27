@@ -1,12 +1,14 @@
 package cactus.model;
 
+import cactus.Menu;
+
 public abstract class Produto {
 
 	private int id, tipo;
 	private String nome;
 	private float preco;
 	
-	final String line = ("=================================");
+	String line = Menu.LINE;
 	
 	public Produto(int id, int tipo, String nome, float preco) {
 		this.id = id;
