@@ -4,8 +4,8 @@ public class CactoArtificial extends Produto {
 
 	private String material;
 	
-	public CactoArtificial(int id, String nome, float preco, String material) {
-		super(id, nome, preco);
+	public CactoArtificial(int id, int tipo, String nome, float preco, String material) {
+		super(id, tipo, nome, preco);
 		this.material = material;
 	}
 

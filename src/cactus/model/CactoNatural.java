@@ -4,8 +4,8 @@ public class CactoNatural extends Produto {
 
 	private String nomeCientifico;
 	
-	public CactoNatural(int id, String nome, float preco, String nomeCientifico) {
-		super(id, nome, preco);
+	public CactoNatural(int id, int tipo, String nome, float preco, String nomeCientifico) {
+		super(id, tipo, nome, preco);
 		this.nomeCientifico = nomeCientifico;
 	}
 
